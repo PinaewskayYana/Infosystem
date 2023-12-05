@@ -3,15 +3,20 @@ from typing import Optional
 from sqlmodel import Field,Session, SQLModel, select, or_
 from models import engine, Users, Application, ApplEl, PhReq, Photo, Req
 
+"""
+Переделать tt-шки в json или около того, для апишки
+убрать принты
+Переделать vievApll в другой формат без принтов, как вариант запихнуть все в json
+"""
+
 # Краткая информация по заявкам клиента
 def select_apl_for_client():
     with Session(engine) as session:
         statement = select(Application).where(Application.user == 4)
         results = session.exec(statement)
-        print("Our applications:")
         for apl in results:
             tt = "Application number: " + str(apl.id) + '\nDescription: ' + apl.text + '\nStatus: ' + apl.status
-            print(tt)
+    return tt
 
 
 # отбор заявок с определенным статусом
@@ -21,17 +26,16 @@ def select_apl_status():
         results = session.exec(statement)
         for apl in results:
             tt = "Application number: " + str(apl.id) + '\nDescription: ' + apl.text + '\nStatus: ' + apl.status
-            print(tt)
+    return tt
 
 # информация о клиенте 
 def select_inf_client():
     with Session(engine) as session:
         statement = select(Users).where(Users.id == 3)
         results = session.exec(statement)
-        print("Client information: ")
         for apl in results:
             tt = "Client id: " + str(apl.id) + '\nName: ' + apl.name + '\nEmail: ' + apl.email + '\nPhone' + apl.phone
-            print(tt)
+    return tt
         
 # отбор фоток к 1 заявке
 def select_photo_for_apl(id_app):
@@ -66,6 +70,7 @@ def select_photo(id_photo):
             t = i.path
         return t
 
+# =============================================================
 def viewAppl(id_app):
     info = select_photo_for_apl(id_app)
     for key in info:
@@ -80,7 +85,7 @@ def main():
     select_apl_for_client()
     select_apl_status()    
     select_inf_client()
-    select_photo_for_apl()
+    select_photo_for_apl(2)
     select_description(3)
     viewAppl(3)
 if __name__ == "__main__":
